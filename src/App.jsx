@@ -1,35 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { useState } from "react"
+import Context from "./contexts/Context"
+import SignInPage from "./pages/authentication pages/SignIn-Page"
+import SignOutPage from "./pages/authentication pages/SignOut-Page"
+import SignUpPage from "./pages/authentication pages/SignUp-Page"
+import ListProductsPage from "./pages/products pages/ListProducts-Page"
+import SingleProductPage from "./pages/products pages/SingleProduct-Page"
+import AddProductPage from "./pages/products pages/AddProduct-Page"
+import UsersCatalogPage from "./pages/User/UsersCatalog-Page"
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const tokenOnLocalStorage = localStorage.getItem("token")
+  const [token, setToken] = useState(tokenOnLocalStorage)
 
+  function setAndPersistToken(token) {
+		setToken(token)
+		localStorage.setItem("token", token)
+	}
+  
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Context.Provider value={{token, setToken, setAndPersistToken}}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/signout" element={<SignOutPage />} />
+          <Route path="/products" element={<ListProductsPage />} />
+          <Route path="/products/1" element={<SingleProductPage />} />
+          <Route path="/products/add" element={<AddProductPage />} />
+          <Route path="/users/my_catalog" element={<UsersCatalogPage />} />
+        </Routes>
+      </BrowserRouter>
+    </Context.Provider>
   )
 }
-
-export default App
